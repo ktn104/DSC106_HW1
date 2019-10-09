@@ -1,0 +1,90 @@
+<html>
+    <body>
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <script src="https://code.highcharts.com/modules/exporting.js"></script>
+            <script src="https://code.highcharts.com/modules/export-data.js"></script>
+            
+            <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+            <script>
+                Highcharts.chart('container', {
+  chart: {
+    plotBackgroundColor: null,
+    plotBorderWidth: null,
+    plotShadow: false,
+    type: 'pie'
+  },
+  title: {
+    text: 'Men Enrollment over the years'
+  },
+  tooltip: {
+    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+  },
+  plotOptions: {
+    pie: {
+      allowPointSelect: true,
+      cursor: 'pointer',
+      dataLabels: {
+        enabled: true,
+        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+      }
+    }
+  },
+  series: [{
+    name: 'Years',
+    colorByPoint: true,
+    data: [{
+      name: '2005',
+      y: 1607,
+      sliced: true,
+      selected: true
+    }, {
+      name: '2006',
+      y: 2031
+    }, {
+      name: '2007',
+      y: 1838
+    }, {
+      name: '2008',
+      y: 1893
+    }, {
+      name: '2009',
+      y: 1695
+    }, {
+      name: '2010',
+      y: 1858
+    }, {
+      name: '2011',
+      y: 1583
+    }, {
+      name: '2012',
+      y: 2328
+    }, {
+      name: '2013',
+      y: 2616
+    },
+    {
+      name:'2014',
+      y:2538
+    },
+    {
+      name: '2015',
+      y:2711
+    },
+    {
+      name:'2016',
+      y:2669
+    },
+    {
+       name:'2017',
+       y:2725
+     },
+     {
+       name:'2018',
+       y:3220
+      }
+   ]
+  }]
+});
+            </script>
+    </body>
+</html>

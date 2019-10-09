@@ -1,0 +1,313 @@
+<html>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <div id="chart"></div>
+        <body>
+<script>
+var data = [
+  {
+    name: "men applied",
+    values: [
+      {date: "2018", price: "45636"},
+      {date: "2017", price: "41583"},
+      {date: "2016", price: "39779"},
+      {date: "2015", price: "37009"},
+      {date: "2014", price: "34618"},
+      {date: "2013", price: "31992"},
+      {date: "2012", price: "28758"},
+      {date: "2011", price: "25097"},
+      {date: "2010", price: "22332"},
+      {date: "2009", price: "21725"},
+      {date: "2008", price: "21590"},
+      {date: "2007", price: "20566"},
+      {date: "2006", price: "19838"},
+      {date: "2005", price: "18147"},
+    ]
+  },
+
+  {
+    name: "women applied",
+    values: [
+      {date: "2018", price: "52265"},
+      {date: "2017", price: "46845"},
+      {date: "2016", price: "44430"},
+      {date: "2015", price: "41047"},
+      {date: "2014", price: "38822"},
+      {date: "2013", price: "35408"},
+      {date: "2012", price: "32049"},
+      {date: "2011", price: "28351"},
+      {date: "2010", price: "25761"},
+      {date: "2009", price: "25321"},
+      {date: "2008", price: "25775"},
+      {date: "2007", price: "24507"},
+      {date: "2006", price: "23748"},
+      {date: "2005", price: "22371"},
+      
+    ]
+  },
+  {
+    name: "men admitted",
+    values: [
+    {date: "2018", price: "13781"},
+      {date: "2017", price: "13981"},
+      {date: "2016", price: "14103"},
+      {date: "2015", price: "12748"},
+      {date: "2014", price: "11758"},
+      {date: "2013", price: "11866"},
+      {date: "2012", price: "10917"},
+      {date: "2011", price: "8707"},
+      {date: "2010", price: "8365"},
+      {date: "2009", price: "7816"},
+      {date: "2008", price: "8517"},
+      {date: "2007", price: "8419"},
+      {date: "2006", price: "9210"},
+      {date: "2005", price: "7580"},
+    ]
+  },
+
+  {
+    name: "women admitted",
+    values: [
+      {date: "2018", price: "15821"},
+      {date: "2017", price: "16231"},
+      {date: "2016", price: "16170"},
+      {date: "2015", price: "13761"},
+      {date: "2014", price: "12837"},
+      {date: "2013", price: "12966"},
+      {date: "2012", price: "12046"},
+      {date: "2011", price: "10269"},
+      {date: "2010", price: "9991"},
+      {date: "2009", price: "9863"},
+      {date: "2008", price: "11200"},
+      {date: "2007", price: "10759"},
+      {date: "2006", price: "12135"},
+      {date: "2005", price: "10311"},
+      
+    ]
+  },
+  {
+    name: "men enrolled",
+    values: [
+      {date: "2018", price: "3220"},
+      {date: "2017", price: "2725"},
+      {date: "2016", price: "2669"},
+      {date: "2015", price: "2711"},
+      {date: "2014", price: "2538"},
+      {date: "2013", price: "2616"},
+      {date: "2012", price: "2328"},
+      {date: "2011", price: "1583"},
+      {date: "2010", price: "1858"},
+      {date: "2009", price: "1695"},
+      {date: "2008", price: "1893"},
+      {date: "2007", price: "1838"},
+      {date: "2006", price: "2031"},
+      {date: "2005", price: "1607"},
+    ]
+  },
+
+  {
+    name: "women enrolled",
+    values: [
+      {date: "2018", price: "3484"},
+      {date: "2017", price: "2974"},
+      {date: "2016", price: "3077"},
+      {date: "2015", price: "2581"},
+      {date: "2014", price: "2383"},
+      {date: "2013", price: "2612"},
+      {date: "2012", price: "2245"},
+      {date: "2011", price: "1861"},
+      {date: "2010", price: "2089"},
+      {date: "2009", price: "2054"},
+      {date: "2008", price: "2399"},
+      {date: "2007", price: "2303"},
+      {date: "2006", price: "2558"},
+      {date: "2005", price: "2113"},
+      
+    ]
+  },
+];
+
+var width = 500;
+var height = 300;
+var margin = 50;
+var duration = 250;
+
+var lineOpacity = "0.25";
+var lineOpacityHover = "0.85";
+var otherLinesOpacityHover = "0.1";
+var lineStroke = "1.5px";
+var lineStrokeHover = "2.5px";
+
+var circleOpacity = '0.85';
+var circleOpacityOnLineHover = "0.25"
+var circleRadius = 3;
+var circleRadiusHover = 6;
+
+
+/* Format Data */
+var parseDate = d3.timeParse("%Y");
+data.forEach(function(d) { 
+  d.values.forEach(function(d) {
+    d.date = parseDate(d.date);
+    d.price = +d.price;    
+  });
+});
+
+
+/* Scale */
+var xScale = d3.scaleTime()
+  .domain(d3.extent(data[0].values, d => d.date))
+  .range([0, width-margin]);
+
+var yScale = d3.scaleLinear()
+  .domain([0, d3.max(data[0].values, d => d.price)])
+  .range([height-margin, 0]);
+
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+/* Add SVG */
+var svg = d3.select("#chart").append("svg")
+  .attr("width", (width+margin)+"px")
+  .attr("height", (height+margin)+"px")
+  .append('g')
+  .attr("transform", `translate(${margin}, ${margin})`);
+
+
+/* Add line into SVG */
+var line = d3.line()
+  .x(d => xScale(d.date))
+  .y(d => yScale(d.price));
+
+let lines = svg.append('g')
+  .attr('class', 'lines');
+
+lines.selectAll('.line-group')
+  .data(data).enter()
+  .append('g')
+  .attr('class', 'line-group')  
+  .on("mouseover", function(d, i) {
+      svg.append("text")
+        .attr("class", "title-text")
+        .style("fill", color(i))        
+        .text(d.name)
+        .attr("text-anchor", "middle")
+        .attr("x", (width-margin)/2)
+        .attr("y", 5);
+    })
+  .on("mouseout", function(d) {
+      svg.select(".title-text").remove();
+    })
+  .append('path')
+  .attr('class', 'line')  
+  .attr('d', d => line(d.values))
+  .style('stroke', (d, i) => color(i))
+  .style('opacity', lineOpacity)
+  .on("mouseover", function(d) {
+      d3.selectAll('.line')
+					.style('opacity', otherLinesOpacityHover);
+      d3.selectAll('.circle')
+					.style('opacity', circleOpacityOnLineHover);
+      d3.select(this)
+        .style('opacity', lineOpacityHover)
+        .style("stroke-width", lineStrokeHover)
+        .style("cursor", "pointer");
+    })
+  .on("mouseout", function(d) {
+      d3.selectAll(".line")
+					.style('opacity', lineOpacity);
+      d3.selectAll('.circle')
+					.style('opacity', circleOpacity);
+      d3.select(this)
+        .style("stroke-width", lineStroke)
+        .style("cursor", "none");
+    });
+
+
+/* Add circles in the line */
+lines.selectAll("circle-group")
+  .data(data).enter()
+  .append("g")
+  .style("fill", (d, i) => color(i))
+  .selectAll("circle")
+  .data(d => d.values).enter()
+  .append("g")
+  .attr("class", "circle")  
+  .on("mouseover", function(d) {
+      d3.select(this)     
+        .style("cursor", "pointer")
+        .append("text")
+        .attr("class", "text")
+        .text(`${d.price}`)
+        .attr("x", d => xScale(d.date) + 5)
+        .attr("y", d => yScale(d.price) - 10);
+    })
+  .on("mouseout", function(d) {
+      d3.select(this)
+        .style("cursor", "none")  
+        .transition()
+        .duration(duration)
+        .selectAll(".text").remove();
+    })
+  .append("circle")
+  .attr("cx", d => xScale(d.date))
+  .attr("cy", d => yScale(d.price))
+  .attr("r", circleRadius)
+  .style('opacity', circleOpacity)
+  .on("mouseover", function(d) {
+        d3.select(this)
+          .transition()
+          .duration(duration)
+          .attr("r", circleRadiusHover);
+      })
+    .on("mouseout", function(d) {
+        d3.select(this) 
+          .transition()
+          .duration(duration)
+          .attr("r", circleRadius);  
+      });
+
+
+/* Add Axis into SVG */
+var xAxis = d3.axisBottom(xScale).ticks(5);
+var yAxis = d3.axisLeft(yScale).ticks(5);
+
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", `translate(0, ${height-margin})`)
+  .call(xAxis);
+
+svg.append("g")
+  .attr("class", "y axis")
+  .call(yAxis)
+  .append('text')
+  .attr("y", 15)
+  .attr("transform", "rotate(-90)")
+  .attr("fill", "#000")
+  .text("Total values");
+
+  
+</script>
+</body>
+<body>
+    <style>
+        svg {
+            font-family: Sans-Serif, Arial;
+        }
+        .line {
+          stroke-width: 2;
+          fill: none;
+        }
+        
+        .axis path {
+          stroke: black;
+        }
+        
+        .text {
+          font-size: 12px;
+        }
+        
+        .title-text {
+          font-size: 12px;
+        }
+    </style>
+</body>
+</html>
